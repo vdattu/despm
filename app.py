@@ -1,33 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@vdattu 
-EswarNandivada
-/
-SPM
-Public
-Fork your own copy of EswarNandivada/SPM
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-SPM/app.py /
-@EswarNandivada
-EswarNandivada aws-final
-Latest commit 9382eff 2 days ago
- History
- 1 contributor
-298 lines (257 sloc)  10.1 KB
- 
-
 from flask import Flask,request,redirect,render_template,url_for,flash,session,send_file
 from flask_session import Session
 from otp import genotp
