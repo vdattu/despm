@@ -1,17 +1,56 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Codespaces
+Marketplace
+Explore
+ 
+@vdattu 
+EswarNandivada
+/
+SPM
+Public
+Fork your own copy of EswarNandivada/SPM
+Code
+Issues
+Pull requests
+Actions
+Projects
+Security
+Insights
+SPM/app.py /
+@EswarNandivada
+EswarNandivada aws-final
+Latest commit 9382eff 2 days ago
+ History
+ 1 contributor
+298 lines (257 sloc)  10.1 KB
+ 
+
 from flask import Flask,request,redirect,render_template,url_for,flash,session,send_file
 from flask_session import Session
 from otp import genotp
 import mysql.connector
 from cmail import sendmail
 import random
-from db import dbconn
 from io import BytesIO
+import os
 app=Flask(__name__)
 app.secret_key='*67@hjyjhk'
 app.config['SESSION_TYPE']='filesystem'
-mydb=mysql.connector.connect(host='spm.ctbgpu7gycn4.ap-northeast-1.rds.amazonaws.com',user='admin',password='Datta2521',db='spm')
+db=os.environ['RDS_DB_NAME']
+user=os.environ['RDS_USERNAME']
+password=os.environ['RDS_PASSWORD']
+host=os.environ['RDS_HOSTNAME']
+port=os.environ['RDS_PORT']
+mydb=mysql.connector.connect(host=host,user=user,password=password,db=db,port=port)
 #mydb=mysql.connector.connect(host='localhost',user='root',password='Eswar@2001',db='spm')
-
+with mysql.connector.connect(host=host,user=user,password=password,db=db,port=port) as conn:
+    cursor=conn.cursor()
+    cursor.execute('create table if not exists students(rollno varchar(6) primary key,name varchar(30),std_group varchar(10),password varchar(15),email varchar(70))')
+    cursor.execute('create table if not exists notes(nid int primary key auto_increment,rollno varchar(6),title varchar(30),content text,date datetime default now(),foreign key(rollno) references students(rollno))')
+    cursor.execute('create table if not exists files(fid int primary key auto_increment,rollno varchar(6),filename varchar(30),filedata longblob,date datetime default now(),foreign key(rollno) references students(rollno))')
 Session(app)
 @app.route('/')
 def index():
@@ -251,40 +290,7 @@ def createpassword():
             flash('New password and confirm passwords should be same')
             return render_template('newpassword.html')
     return render_template('newpassword.html')
-
+    
 if __name__=="__main__":
-    dbconn()
     app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
